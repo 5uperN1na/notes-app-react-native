@@ -8,7 +8,9 @@ const NoteList = ({ notes }) => {
     <View style={styles.container}>
       <FlatList
         data={notes}
-        keyExtractor={(item) => item.$id}
+        keyExtractor={(item, index) =>
+          item.$id?.toString() ?? item.id?.toString() ?? index.toString()
+        }
         renderItem={({ item }) => <NoteItem note={item} />}
       />
     </View>
@@ -16,6 +18,9 @@ const NoteList = ({ notes }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   noteItem: {
     flexDirection: "row",
     justifyContent: "space-between",

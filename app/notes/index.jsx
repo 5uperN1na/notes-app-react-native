@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import AddNoteModal from "../../components/AddNoteModal";
 import NoteList from "../../components/NoteList";
 import noteService from "../../services/noteService";
 
 const NoteScreen = () => {
-  const [notes, setNotes] = useState([]);
+    const [notes, setNotes] = useState([]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newNote, setNewNote] = useState("");
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,25 +19,22 @@ const NoteScreen = () => {
 
   const fetchNotes = async () => {
     setLoading(true);
+
     const response = await noteService.getNotes();
-    console.log("Data from Notes Index:" + JSON.stringify(response.data));
+    console.log("Data from Notes Index:", response.data);
 
     if (response.error) {
       setError(response.error);
+      setNotes([]);
       Alert.alert("Error", response.error);
     } else {
-      setNotes(response.data);
+      setNotes(response.data || []);
       setError(null);
     }
 
     setLoading(false);
   };
 
-  useEffect(() => {
-    console.log("State has been updated to: ", notes);
-  }, [notes]);
-
-  //add new note
   const addNote = () => {
     if (newNote.trim() === "") {
       return;
@@ -46,7 +42,7 @@ const NoteScreen = () => {
 
     setNotes((prevNotes) => [
       ...prevNotes,
-      { id: Date.now.toString(), text: newNote },
+      { $id: Date.now().toString(), text: newNote },
     ]);
 
     setNewNote("");
@@ -81,7 +77,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
-
   addButton: {
     position: "absolute",
     bottom: 20,

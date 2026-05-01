@@ -1,14 +1,29 @@
 import PostItNote from "@/assets/images/post-it.png";
 import { useRouter } from "expo-router";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
 const HomeScreen = () => {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <Image source={PostItNote} />
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
+      <Image
+        source={PostItNote}
+        style={styles.image}
+        resizeMode="contain"
+      />
+
       <Text style={styles.title}>Welcome to the Notes App!</Text>
+
       <Text style={styles.subtitle}>
         Capture your thoughts anytime, anywhere. :)
       </Text>
@@ -19,29 +34,29 @@ const HomeScreen = () => {
       >
         <Text style={styles.buttonText}>Get Started</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
     backgroundColor: "#f8f9fa",
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 180,
+    height: 180,
     marginBottom: 20,
-    borderRadius: 10,
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
     marginBottom: 10,
     color: "#333",
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
