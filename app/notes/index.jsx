@@ -15,42 +15,80 @@ const NoteScreen = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    //console.log("use effect");
     fetchNotes();
   }, []);
 
   const fetchNotes = async () => {
+    // console.log("fetching notes");
     setLoading(true);
     const response = await noteService.getNotes();
-    console.log("Data from Notes Index:" + JSON.stringify(response.data));
+    //console.log("Data from Notes Index:" + JSON.stringify(response.data));
 
     if (response.error) {
       setError(response.error);
       Alert.alert("Error", response.error);
+      setNotes([]);
     } else {
-      setNotes(response.data);
+      setNotes(response.data || []);
       setError(null);
     }
 
     setLoading(false);
   };
 
-  useEffect(() => {
-    console.log("State has been updated to: ", notes);
-  }, [notes]);
+  // useEffect(() => {
+  //   console.log("State has been updated to: ", JSON.stringify(notes));
+  // }, [notes]);
 
   //add new note
-  const addNote = () => {
+  const addNote = async () => {
+    //console.log("adding new notes.");
     if (newNote.trim() === "") {
       return;
     }
 
-    setNotes((prevNotes) => [
-      ...prevNotes,
-      { id: Date.now.toString(), text: newNote },
-    ]);
+    // setNotes((prevNotes) => [
+    //   ...prevNotes,
+    //   { id: Date.now.toString(), text: newNote },
+    // ]);
+
+    const response = await noteService.addNote(newNote);
+
+    if (response.error) {
+      //Alert.alert("Error", response.error);
+      console.log("Error adding new note");
+    } else {
+      // console.log("notes: " + JSON.stringify(notes));
+      // console.log("response data: " + JSON.stringify(response.data));
+      await fetchNotes();
+      //setNotes([...notes, response.date]);
+    }
 
     setNewNote("");
     setModalVisible(false);
+  };
+
+  // Delete Note
+  const deleteNote = async (id) => {
+    Alert.alert("Delete Note", "Are you sure you want to delete this note?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          const response = await noteService.deleteNote(id);
+          if (response.error) {
+            Alert.alert("Error", response.error);
+          } else {
+            setNotes(notes.filter((note) => note.$id !== id));
+          }
+        },
+      },
+    ]);
   };
 
   return (
